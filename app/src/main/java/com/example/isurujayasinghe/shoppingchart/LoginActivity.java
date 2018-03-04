@@ -28,6 +28,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +69,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    FirebaseDatabase database;
+    DatabaseReference myRef;
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
+
+
+
+
+
 
     @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -71,6 +90,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
+
+        mAuth = FirebaseAuth.getInstance();
+        authStateListener= new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+
+            }
+        };
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -93,6 +122,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+//    public void loginButtonClicked(View view){
+//        String email= mEmailView.getText().toString();
+//        String pass = mPasswordView.getText().toString();
+//        System.out.println(email);
+//    }
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -187,6 +222,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
+
+            String email1= mEmailView.getText().toString();
+            String pass = mPasswordView.getText().toString();
+            //System.out.println(email1);
+
+            if (TextUtils.isEmpty(email1) || TextUtils.isEmpty(pass)){
+                Toast.makeText(this,"Enter both values",Toast.LENGTH_LONG).show();
+            }
+            else {
+                mAuth.signInWithEmailAndPassword(email1,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()){
+                            Toast.makeText(LoginActivity.this,"Incorrect email or password",Toast.LENGTH_LONG);
+                            System.out.println("Wrong");
+                        }
+
+                    }
+                });
+            }
         }
     }
 
