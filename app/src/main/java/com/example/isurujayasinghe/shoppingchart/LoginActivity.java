@@ -235,20 +235,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
 
-            String email1= mEmailView.getText().toString();
-            String pass = mPasswordView.getText().toString();
+//            String email1= mEmailView.getText().toString();
+//            String pass = mPasswordView.getText().toString();
             //System.out.println(email1);
 
-            if (TextUtils.isEmpty(email1) || TextUtils.isEmpty(pass)){
+            if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)){
                 Toast.makeText(this,"Enter both values",Toast.LENGTH_LONG).show();
             }
             else {
-                mAuth.signInWithEmailAndPassword(email1,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this,"Incorrect email or password",Toast.LENGTH_LONG);
-                            System.out.println("Wrong");
+                            Toast.makeText(LoginActivity.this,"Incorrect email or password",Toast.LENGTH_SHORT).show();
+                            //System.out.println("Wrong");
                         }
 
                     }
