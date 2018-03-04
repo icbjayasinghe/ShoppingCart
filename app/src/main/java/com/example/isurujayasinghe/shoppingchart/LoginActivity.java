@@ -3,6 +3,7 @@ package com.example.isurujayasinghe.shoppingchart;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -40,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -95,6 +97,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         authStateListener= new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser()!=null){
+                    Intent intent= new Intent(LoginActivity.this,HomeActivity.class);
+                    startActivity(intent);
+                }
 
 
             }
@@ -123,7 +129,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mProgressView = findViewById(R.id.login_progress);
     }
 
-//    public void loginButtonClicked(View view){
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(authStateListener);
+    }
+
+    //    public void loginButtonClicked(View view){
 //        String email= mEmailView.getText().toString();
 //        String pass = mPasswordView.getText().toString();
 //        System.out.println(email);
